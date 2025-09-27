@@ -1,5 +1,4 @@
-﻿// Review 機能開発用ブランチ
-const hello = alert('hello');
+﻿ 
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
