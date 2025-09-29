@@ -1,6 +1,4 @@
-﻿ 
-
-if (process.env.NODE_ENV !== "production") {
+﻿if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 const express = require("express");
@@ -26,7 +24,7 @@ const MongoStore = require("connect-mongo");
 
 // const dbUrl = process.env.DB_URL ; デプロイ用
 
-const dbUrl = "mongodb://localhost:27017/yelp-camp";
+const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
 mongoose
   .connect(dbUrl, {
     useNewUrlParser: true,
@@ -57,22 +55,24 @@ app.use(
   })
 );
 
+const secret = process.env.SECRET || "mysecret";
+
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   crypto: {
-    secret: "mysecret",
+    secret,
   },
   touchAfter: 24 * 3600, // time period in seconds
 });
 
-store.on('error', e => {
-  console.log('セッションストアエラー',e);
+store.on("error", (e) => {
+  console.log("セッションストアエラー", e);
 });
 
 const sessionConfig = {
   store,
   name: "session",
-  secret: "mysecret",
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
